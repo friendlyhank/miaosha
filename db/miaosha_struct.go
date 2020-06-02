@@ -6,7 +6,13 @@ import (
 
 // Goods -
 type Goods struct {
-	Oid int64 `xorm:"not null pk autoincr BIGINT(20)"`
+	Oid         int64     `xorm:"not null pk autoincr BIGINT(20)"`
+	Name        string    `xorm:"VARCHAR(64)"`
+	Price       int64     `xorm:"BIGINT(20)"`
+	Stocknum    int       `xorm:"INT(11)"`
+	Description string    `xorm:"VARCHAR(255)"`
+	Status      int       `xorm:"TINYINT(4)"`
+	Createtime  time.Time `xorm:"default 'CURRENT_TIMESTAMP' TIMESTAMP"`
 }
 
 // Order -
