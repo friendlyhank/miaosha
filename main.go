@@ -1,1 +1,5 @@
-package miaosha
+package main
+
+func main(){
+
+}
