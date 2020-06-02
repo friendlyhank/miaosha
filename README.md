@@ -8,3 +8,8 @@
 ## 少买
 
 ## Restful API设计风格
+
+
+
+优化：
+dbsource写在配置之中

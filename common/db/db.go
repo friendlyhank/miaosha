@@ -1,7 +1,6 @@
 package db
 
 import (
-	"github.com/astaxie/beego"
 	mysql "github.com/go-sql-driver/mysql"
 	"github.com/xormplus/xorm"
 )
@@ -21,7 +20,7 @@ func Init() {
 	}
 
 	// miaosha
-	dbSource := beego.AppConfig.String("dbsource")
+	dbSource := "root:123456@tcp(127.0.0.1:3306)/miaosha?charset=utf8mb4&loc=Local&interpolateParams=true"
 	if miaoshaEngine, err = xorm.NewEngine("mysql", dbSource); err != nil {
 		panic(err)
 	}
