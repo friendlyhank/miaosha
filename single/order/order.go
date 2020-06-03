@@ -12,27 +12,24 @@ type Order struct{
 
 //创建订单
 func CreateOrder(oid int64,nums int)(order *db.Order,err error){
-	var(
-		goods *db.Goods
-	)
 
 	//商品是否存在
-	goods,err = Dao.GetGoods(oid)
+	var g *db.Goods
+	g,err = Dao.GetGoods(oid)
 	if err != nil{
 		return
 	}
 
-	if goods == nil{
+	if g == nil{
 		err = errors.New("商品不存在")
 		return
 	}
 
 	//检查库存
-	if goods.Stocknum < nums{
+	if g.Stocknum < nums{
 		err = errors.New("商品库存不足")
 		return
 	}
-
 
 	session := db.Engine().NewSession()
 	defer session.Close()
@@ -41,7 +38,21 @@ func CreateOrder(oid int64,nums int)(order *db.Order,err error){
 	session.Begin()
 
 	//排它锁锁定订单
-	session.Table("goods").Where("oid =?",goods.Oid).ForUpdate().Get(goods)
+	var goods = &db.Goods{}
+	var has bool
+	has,err = session.Table("goods").Where("oid =?",g.Oid).ForUpdate().Get(goods)
+	if !has || err != nil{
+		session.Rollback()
+		err = errors.New("商品不存在")
+		return
+	}
+
+	//检查库存
+	if goods.Stocknum < nums{
+		session.Rollback()
+		err = errors.New("商品库存不足")
+		return
+	}
 
 	//扣减库存
 	goods.Stocknum -= int(nums)

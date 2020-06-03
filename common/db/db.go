@@ -25,7 +25,7 @@ func Init() {
 		panic(err)
 	}
 	// 获取当前的运行模式，如果再DEV模式下，则打印所有的Sql
-		miaoshaEngine.ShowSQL(true)
+	miaoshaEngine.ShowSQL(false)
 }
 
 // Engine - 主数据库
