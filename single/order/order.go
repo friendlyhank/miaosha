@@ -2,6 +2,7 @@ package order
 
 import (
 	"errors"
+	"github.com/astaxie/beego/logs"
 	"miaosha/Dao"
 	"miaosha/common/db"
 	"time"
@@ -22,12 +23,14 @@ func CreateOrder(oid int64,nums int)(order *db.Order,err error){
 
 	if g == nil{
 		err = errors.New("商品不存在")
+		logs.Error("GetGoods|Err|%v|",err)
 		return
 	}
 
 	//检查库存
 	if g.Stocknum < nums{
 		err = errors.New("商品库存不足")
+		logs.Error("g.Stocknum < nums|Err|%v|",err)
 		return
 	}
 
@@ -44,6 +47,7 @@ func CreateOrder(oid int64,nums int)(order *db.Order,err error){
 	if !has || err != nil{
 		session.Rollback()
 		err = errors.New("商品不存在")
+		logs.Error("GetGoods|Err|%v|",err)
 		return
 	}
 
@@ -51,6 +55,7 @@ func CreateOrder(oid int64,nums int)(order *db.Order,err error){
 	if goods.Stocknum < nums{
 		session.Rollback()
 		err = errors.New("商品库存不足")
+		logs.Error("goods.Stocknum < nums|Err|%v|",err)
 		return
 	}
 
@@ -59,6 +64,7 @@ func CreateOrder(oid int64,nums int)(order *db.Order,err error){
 	_,err = Dao.UpdateGoods(session,goods,"stocknum")
 	if err != nil{
 		session.Rollback()
+		logs.Error("UpdateGoods|Err|%v|",err)
 		return
 	}
 
@@ -82,6 +88,7 @@ func CreateOrder(oid int64,nums int)(order *db.Order,err error){
 	_,err = session.Insert(order)
 	if err != nil{
 		session.Rollback()
+		logs.Error("Insert|Err|%v|",err)
 		return
 	}
 
