@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	_ "miaosha/common"
 	"miaosha/single/order"
 	"net/http"
@@ -13,6 +14,10 @@ func main(){
 
 //HandleBuyGoodsfunc- 购买商品
 func HandleBuyGoodsfunc(w http.ResponseWriter,r *http.Request){
-	order.CreateOrder(100000,1)
-	w.Write([]byte("恭喜你,秒杀成功!"))
+	order,err := order.CreateOrder(100000,1)
+	if err != nil{
+		w.Write([]byte(err.Error()))
+	}
+	b,_ := json.Marshal(order)
+	w.Write(b)
 }
